@@ -23,28 +23,33 @@ void output_network_state(Network& network)
 
 int main(int argc, char* argv[])
 {
+	/* usage: 
+	the 1st input parameter is network structure file, ofen in csv format,
+	the 2nd input parameter is the initial infected node(id) or "all",which means run the process setting each node as init node,
+	tht 3rd input parameter is the iteration times.
+	*/
 	Network nt1,nt2;
 	string input_file = argv[1];
-	if (argv[2] == "all")
+	if (string(argv[2]) == "all")
 	{
-
+		int iter_times = atoi(argv[3]);
+		Simulation sim1(nt1, 30, input_file, iter_times);
+		sim1.run_all_sim();
 	}
 	else
 	{
 		int init_node = atoi(argv[2]);
 		int iter_times = atoi(argv[3]);
 		Simulation sim1(nt1,30, input_file,iter_times);
+		cout << "Initial infected node : " << init_node << " iteration times : " << iter_times << endl;
+		sim1.run_simulation(init_node);
 	}
 	
 	
 	
 	
-	cout << "Initial infected node : " << init_node <<" iteration times : "<<iter_times<< endl;
+	//cout << "Initial infected node : " << init_node <<" iteration times : "<<iter_times<< endl;
 	//output_network_state(nt1);
-	sim1.run_all_sim();
-	cout << "----------------------------------------" << endl;
-	//output_network_state(nt1);
-
 
 	//string method_name = argv[2]; 
 	//Method method = METHOD1;

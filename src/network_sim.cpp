@@ -47,6 +47,10 @@ Simulation::Simulation(Network& network, int simTime, string input_file,int iter
 	input_file(input_file),
 	iter_times(iter_times)
 {
+	rng.init_genrand(0);
+	ofstream log_file;
+	log_file.open("running_log.txt");
+	log_file.clear();
 	ofstream out;
 	out.open("output.csv");
 	out.clear();
@@ -57,14 +61,14 @@ Simulation::Simulation(Network& network, int simTime, string input_file,int iter
 
 void Simulation::run_all_sim()
 {
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for (auto& iter = network.nodes.begin(); iter != network.nodes.end(); iter++)
 	{
-		run_simulation_no_method((*iter).second.id);
+		run_simulation((*iter).second.id);
 	}
 }
 
-void Simulation::run_simulation_no_method(int init_node)
+void Simulation::run_simulation(int init_node)
 {
 	for (auto& iter = network.nodes.begin(); iter != network.nodes.end(); iter++)
 	{
@@ -74,7 +78,10 @@ void Simulation::run_simulation_no_method(int init_node)
 	}
 	network.nodes.at(init_node).cur_state = I;
 	network.nodes.at(init_node).next_state = I;
+	ofstream log_file;
+	log_file.open("running_log.txt",ios::app);
 	cout << "init node:" << init_node << endl;
+	log_file << "init node:" << init_node << endl;
 	int infected_number = 0;
 	for (int i = 0; i < iter_times; i++)
 	{
@@ -106,8 +113,9 @@ void Simulation::run_simulation_no_method(int init_node)
 						prob_to_I = 0;
 					else
 						prob_to_I = 1 - prob_to_I;
-					float rng = rand() / (RAND_MAX + 1.f);
-					if (0 <= rng && rng < prob_to_I)
+					//float rng = rand() / (RAND_MAX + 1.f);
+					double r = rng.rand_real_not0();
+					if (0 <= r && r < prob_to_I)
 						e.next_state = I;
 					else
 						e.next_state = S;
@@ -122,11 +130,14 @@ void Simulation::run_simulation_no_method(int init_node)
 		infecteds.erase(ite, infecteds.end());
 		infected_number += infecteds.size();
 		//cout << "The infected node number of iteration " << i + 1 << " is " << infecteds.size() << endl;;
+		log_file << "The infected node number of iteration"<< i + 1 <<" is "<< infecteds.size() << endl;
 	}
 	cout << "The average infected node number is " << infected_number <<"/"<<iter_times;
+	log_file<< "The average infected node number is " << infected_number << "/" << iter_times;
 	infected_number = infected_number / iter_times;
 
 	cout << " which is equal to " << infected_number << endl;
+	log_file << " which is equal to " << infected_number << endl;
 	ofstream out;
 	out.open("output.csv",ios::app);
 	int k = network.nodes.at(init_node).k;

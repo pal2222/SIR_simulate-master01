@@ -7,6 +7,7 @@
 #include "node.h"
 #include "network.h"
 #include <fstream>
+#include "mtwist.h"
 using namespace std;
 
 enum Method
@@ -33,7 +34,7 @@ public:
 	string input_file;
 	void set_initial_network(string input_file);
 	bool create_agent(int id);
-	void run_simulation_no_method(int init_node);
+	void run_simulation(int init_node);
 	void output_node_state(Network& network);
 	void run_all_sim();
 	//void run_simulation_method1(float prob_1,float prob_2);
@@ -43,6 +44,7 @@ private:
 	//ofstream out_spread_degree; //记录每一时刻的传播指数
 	Network& network;
 	vector<int> infecteds;
+	MTwist rng;
 	//float sum_spread_degree;
 	//vector<vector<float>> spread_degree;
 	//vector<vector<vector<int>>> mStore;  // first itreation times,second simulation times,third neu pos and neg number

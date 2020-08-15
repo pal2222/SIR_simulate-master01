@@ -10,4 +10,8 @@ add_executable(nature2010SIR
                network.h
 			   network.cpp
 			   network_sim.cpp
-			   network_sim.h)
+			   network_sim.h
+			   mtwist.h
+			   mtwist.cpp
+			   util.h
+			   perf_timer.h)
